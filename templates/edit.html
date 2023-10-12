@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h4>Edit Task</h4>
+    <form action="/edit/{{ task.task_id }}" method="POST">
+        <input type="text" name="task_name" id="task_name" value="{{ task.task_name }}">
+        <input type="datetime-local" name="start_time" id="start_time" value="{{ task.start }}">
+        <input type="datetime-local" name="end_time" id="end_time" value="{{ task.end }}">
+        <input type="submit" class="outline" value="Confirm Edit">
+    </form>
+{% endblock %}

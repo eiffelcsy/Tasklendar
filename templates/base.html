@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+    <title>Tasklendar</title>
+  </head>
+
+  <body>
+    <main class="container">
+    {% if isEdit %}
+    {% else %}
+      <section id="navbar">
+        <nav>
+          <ul>
+            <li>
+              <a href="/" class="contrast"><strong>Tasklendar</strong></a>
+            </li>
+          </ul>
+          <ul>
+            <li>
+              <details role="list" dir="rtl">
+                <summary aria-haspopup="listbox" role="link" class="contrast">View</summary>
+                <ul role="listbox">
+                  <li><a href="/">All Tasks</a></li>
+                  <li><a href="/today/">Today</a></li>
+                  <li><a href="#">Week</a></li>
+                </ul>
+              </details>
+            </li>
+            <li><a href="/add/" role="button">Add Task</a></li>
+          </ul>
+        </nav>
+        <hr>
+      </section>
+    {% endif %}
+      <section>
+        {% block content %} {% endblock %}
+      </section>
+    </main>
+  </body>
+  <footer class="container">
+    <small>Built by <a href="https://www.linkedin.com/in/eiffelchongsy/" target="_blank"
+        rel="noopener noreferrer">Eiffel Chong</a> • <a href="">Source code</a></small>
+  </footer>
+
+</html>

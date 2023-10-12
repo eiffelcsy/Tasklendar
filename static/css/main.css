@@ -1,0 +1,24 @@
+.title {
+    text-align: center;
+    align-items: center;
+}
+
+.nav-obj {
+    font-size: 15px;
+}
+
+.day tr {
+    height: 3rem;
+}
+
+.day th {
+    text-align: center;
+}
+
+.day-time {
+    width: 20%;
+}
+
+.day-task {
+    text-align: center;
+}

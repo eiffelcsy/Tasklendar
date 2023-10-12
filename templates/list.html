@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section id="homepage">
+    <h4>All Tasks</h4>
+    <table class="styled-table" id="tasks-table">
+        <thead>
+            <th>Task</th>
+            <th>Date Added</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Actions</th>
+        </thead>
+        <tbody>
+            {% for task in tasks %}
+            <tr>
+                <td>{{ task.task_name }}</td>
+                <td>{{ task.timestamp.date().strftime('%d %b %Y') }}</td>
+                <td>{{ task.start.strftime('%a %d %b %Y, %I:%M%p') }}</td>
+                <td>{{ task.end.strftime('%a %d %b %Y, %I:%M%p') }}</td>
+                <td>
+                    <a href="/delete/{{ task.task_id }}">Delete Task</a>
+                    <hr>
+                    <a href="/edit/{{ task.task_id }}">Edit Task</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}
