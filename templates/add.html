@@ -5,10 +5,10 @@
 <form action="/add/" method="POST">
     <label for="task_name">Task Name: </label>
     <input type="text" name="task_name" id="task_name">
-    <label for="start_time">Start Date & Time: </label>
-    <input type="datetime-local" name="start_time" id="start_time">
-    <label for="end_time">End Date & Time: </label>
-    <input type="datetime-local" name="end_time" id="end_time">
+    <label for="start_time">Start Date & Time (30-minute intervals): </label>
+    <input type="datetime-local" name="start_time" id="start_time" step="1800">
+    <label for="end_time">End Date & Time: (30-minute intervals)</label>
+    <input type="datetime-local" name="end_time" id="end_time" step="1800">
     <input type="submit" class="outline" value="Add Task">
 </form>
 {% endblock %}

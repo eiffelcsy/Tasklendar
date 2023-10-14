@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
+from datetime import datetime, timedelta
+import re
 
 # Initialize Flask
 app = Flask(__name__)
@@ -13,7 +14,7 @@ class Task(db.Model):
     task_name = db.Column(db.String(100), nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.now())
     start = db.Column(db.DateTime, default=datetime.now())
-    duration = db.Column(db.String, default=0)
+    duration = db.Column(db.Float, default=0)
     end = db.Column(db.DateTime, default=datetime.now())
     
     def __repr__(self) -> str:
@@ -38,7 +39,7 @@ def add():
             task_name=name,
             start=stime,
             end=etime,
-            duration=str(durat)
+            duration= (durat / timedelta(minutes=1))
             )
 
         try:
@@ -70,7 +71,7 @@ def update(id):
         task.task_name = request.form["task_name"]
         task.start = datetime.strptime(request.form["start_time"], '%Y-%m-%dT%H:%M')
         task.end = datetime.strptime(request.form["end_time"], '%Y-%m-%dT%H:%M')
-        task.duration = str(task.end - task.start)
+        task.duration = ((task.end - task.start) / timedelta(minutes=1))
 
         try:
             db.session.commit()
@@ -82,14 +83,20 @@ def update(id):
 
 @app.route("/today/")
 def today():
-    steps = [x for x in range(0, 48)]
+    hours = [f"{hour:02d}{minute:02d}" for hour in range(24) for minute in [0, 30]]
+    today = datetime.now().strftime("%Y-%m-%d")
+    hours_datetime = [datetime.strptime(today + hour, "%Y-%m-%d%H%M") for hour in hours]
+    hours_dict = {}
     tasks_dict = {}
 
     today_tasks = db.session.execute(db.select(Task).where(Task.start.contains(datetime.today().date()))).scalars().all()
     for task in today_tasks:
-        tasks_dict[task.start.hour] = {"task_name": task.task_name, "end_time": task.end.hour}
+        tasks_dict[task.start] = {"task_name": task.task_name, "end_time": task.end, "duration": task.duration}
 
-    return render_template("today.html", hours=[int((100*x)/2) for x in steps], tasks_dict=tasks_dict)
+    for hourdt, hour in zip(hours_datetime, hours):
+        hours_dict[hourdt] = hour
+
+    return render_template("today.html", hours_dict=hours_dict, tasks_dict=tasks_dict)
 
 if __name__ == "__main__":
     app.run(debug=True)

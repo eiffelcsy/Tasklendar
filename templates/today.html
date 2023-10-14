@@ -9,20 +9,32 @@
         </tr>
     </thead>
     <tbody>
-        {% set ns = namespace(hrs=0) %}
-        {% for hour in hours %}
+        {% for hour in hours_dict %}
         <tr>
-            <td>{{ "{h}".format(h=hour) }}</td>
+            <td>{{ hours_dict[hour] if hours_dict[hour][-2]=="0" }}</td>
             <td class="day-task">
                 {% if hour in tasks_dict %}
-                    {% set ns.hrs = hour %}
-                {% endif %}
-                {% if ns.hrs in tasks_dict %}
-                    {{ tasks_dict[ns.hrs]["task_name"] if tasks_dict[ns.hrs]["end_time"] >= hour }}
+                        <div class="task-overlay" id="task-{{ tasks_dict[hour]['duration'] }}">
+                            {{ tasks_dict[hour]["task_name"] }}
+                        </div>
                 {% endif %}
             </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const taskDivs = document.querySelectorAll(".task-overlay");
+        const tableHeight = document.querySelector("td").offsetHeight;
+    
+        taskDivs.forEach((taskDiv) => {
+            const hour = parseInt(taskDiv.id.split("-")[1]) / 60; 
+            const height = hour * tableHeight * 2;
+            taskDiv.style.height = height + "px";
+        });
+    });
+</script>
+
 {% endblock %}
