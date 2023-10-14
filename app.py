@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import re
 
 # Initialize Flask
@@ -12,7 +12,7 @@ db = SQLAlchemy(app)
 class Task(db.Model):
     task_id = db.Column(db.Integer, primary_key=True)
     task_name = db.Column(db.String(100), nullable=False)
-    timestamp = db.Column(db.DateTime, default=datetime.now())
+    timestamp = db.Column(db.DateTime, default=datetime.now(tz=timezone(timedelta(hours=8))))
     start = db.Column(db.DateTime, default=datetime.now())
     duration = db.Column(db.Float, default=0)
     end = db.Column(db.DateTime, default=datetime.now())
@@ -84,12 +84,12 @@ def update(id):
 @app.route("/today/")
 def today():
     hours = [f"{hour:02d}{minute:02d}" for hour in range(24) for minute in [0, 30]]
-    today = datetime.now().strftime("%Y-%m-%d")
+    today = datetime.now(tz=timezone(timedelta(hours=8))).strftime("%Y-%m-%d")
     hours_datetime = [datetime.strptime(today + hour, "%Y-%m-%d%H%M") for hour in hours]
     hours_dict = {}
     tasks_dict = {}
 
-    today_tasks = db.session.execute(db.select(Task).where(Task.start.contains(datetime.today().date()))).scalars().all()
+    today_tasks = db.session.execute(db.select(Task).where(Task.start.contains(today))).scalars().all()
     for task in today_tasks:
         tasks_dict[task.start] = {"task_name": task.task_name, "end_time": task.end, "duration": task.duration}
 
